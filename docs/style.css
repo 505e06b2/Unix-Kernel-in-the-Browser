@@ -1,0 +1,44 @@
+@font-face {
+  font-family: vga;
+  src: url(PxPlus_IBM_VGA8.ttf);
+}
+
+#main {
+	height: 480px;
+	width: 640px;
+	font-size: 16px;
+	color: #eee;
+	margin: 0px;
+	font-family: vga, monospace;
+}
+
+#main > div {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin: 0px;
+	height: 16px;
+	word-wrap: break-word;
+	white-space: pre;
+}
+
+.contain {
+	display: inline-block;
+	background: #111;
+	position: relative;
+	padding: 10px;
+}
+
+#overlay {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+}
+
+.cursor {
+	position: absolute;
+	background: #eee;
+	width: 7px;
+	height: 20px;
+}
