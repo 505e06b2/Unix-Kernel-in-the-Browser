@@ -7,9 +7,11 @@
 	height: 480px;
 	width: 640px;
 	font-size: 16px;
-	color: #eee;
+	color: transparent; /* colour of caret*/
+	text-shadow: 0 0 0 #eee;
 	margin: 0px;
 	font-family: vga, monospace;
+	outline: none;
 }
 
 #main > div {
@@ -34,6 +36,7 @@
 	width: 100%;
 	top: 0px;
 	left: 0px;
+	pointer-events: none;
 }
 
 .cursor {

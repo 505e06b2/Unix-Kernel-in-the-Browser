@@ -5,7 +5,7 @@ export default function(id, overlay) {
 	self.getCurrentLine = function() {
 		return lineElems[currentLine];
 	}
-	
+
 	self.printAtCursor = function(txt) {
 		for(let c of txt) {
 			//check bounds
@@ -19,7 +19,7 @@ export default function(id, overlay) {
 				}
 				cursor_x = 0;
 			}
-			
+
 			let charcode = c.charCodeAt(0);
 			if(charcode >= 32 && charcode < 127) {
 				lineElems[currentLine].innerText += c;
@@ -28,7 +28,7 @@ export default function(id, overlay) {
 		}
 		syncCursor();
 	}
-	
+
 	self.deleteAtCursor = function() {
 		if(lineElems[currentLine].innerText.length > 0) {
 			let txt = lineElems[currentLine].innerText;
@@ -44,7 +44,7 @@ export default function(id, overlay) {
 		}
 		syncCursor();
 	}
-	
+
 	self.clear = function() {
 		self.elem.innerHTML = "";
 		for(let i = 0; i < displayLines; i++) {
@@ -55,7 +55,7 @@ export default function(id, overlay) {
 		cursor_x = 0;
 		syncCursor();
 	}
-	
+
 	self.enterTextMode = function() {
 		self.clear();
 		if(cursorElem.interval) clearInterval(cursorElem.interval);
@@ -63,7 +63,17 @@ export default function(id, overlay) {
 			cursorElem.style.visibility = (cursorElem.style.visibility == "hidden") ? "visible" : "hidden";
 		}, 1000);
 	}
-	
+
+	self.pause = function() {
+		clearInterval(cursorElem.interval);
+		cursorElem.style.visibility = "hidden";
+	}
+
+	self.exit = function() {
+		self.pause();
+		cursorElem.outerHTML = "";
+	}
+
 	//private
 	let lineElems = null;
 	let currentLine = 0; //this is the y of the cursor
@@ -73,24 +83,24 @@ export default function(id, overlay) {
 		let line = getComputedStyle(document.querySelector("#main > div"));
 		return parseInt(line.height) + parseInt(line.paddingTop) + parseInt(line.paddingBottom);
 	})();
-	
+
 	let setLineElems = function() {lineElems = self.elem.getElementsByTagName("div");}
-	
+
 	let syncCursor = function() {
 		let temp_y = currentLine;
 		let temp_x;
-		
+
 		if(cursor_x == 80) { //edge case where a line is full
 			temp_y++;
 			temp_x = 0;
 		} else {
 			temp_x = cursor_x;
 		}
-		
+
 		cursorElem.style.top = (temp_y * 20) + 10;
 		cursorElem.style.left = (temp_x * 8) + 10;
 	}
-	
+
 	//init
 	cursorElem.className = "cursor";
 	cursorElem.style.visibility = "hidden";

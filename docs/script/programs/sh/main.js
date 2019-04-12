@@ -1,4 +1,4 @@
-export default async function(kernel, args) {
+export default async function(kernel, settings) {
 	let exit = false;
 	
 	let splitLine = function(line) {
@@ -15,6 +15,7 @@ export default async function(kernel, args) {
 	}
 	
 	let parse = async function(line) {
+		if(line === undefined) return;
 		line = splitLine(line);
 		if(line.length == 0) return;
 		
@@ -25,13 +26,16 @@ export default async function(kernel, args) {
 				
 			default:
 				{
-					let name = line.shift();
+					let prog_settings = {
+						path: settings.path,
+						argv: line
+					}
 					try {
-						await kernel.exec(name, line);
+						await kernel.exec(line[0], prog_settings);
 					} catch(e) {
-						if(e instanceof TypeError) kernel.puts(`shell: ${name}: command not found`);
+						if(e instanceof TypeError) kernel.puts(`shell: ${line[0]}: command not found`);
 						else {
-							kernel.puts(`shell: ${name}: error in program; check console`);
+							kernel.puts(`shell: ${line[0]}: error in program; check console`);
 							console.log(e);
 						}
 					}
