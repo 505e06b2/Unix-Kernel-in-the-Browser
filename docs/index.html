@@ -8,9 +8,30 @@
 	<div class="contain">
 		<div id="main" contenteditable="true" spellcheck="false">
 			<div>Loading Kernel...</div>
-			<div><noscript>Javascript is disabled(?)</noscript></div>
+			<div>&nbsp;</div>
+			
+			<!-- Detect if Javascript is disabled by removing the warning with JS -->
+			<div id="nojs">Javascript is disabled(?)</div>
+			<script style="display: none">
+				document.getElementById("nojs").outerHTML = "";
+			</script>
+			
+			<div id="troubleshooting"></div>
 		</div>
 		<div id="overlay"></div>
 	</div>
+	
+	<script style="display: none">
+		setTimeout(function() {
+			let elem = document.getElementById("troubleshooting");
+			if(elem === null) return;
+			elem.outerHTML = `
+				<div>Troubleshooting:</div>
+				<div>Firefox</div>
+				<div>  Check console, if the error involves a "dynamic import":</div>
+				<div>    Enable "javascript.options.dynamicImport" in about:config</div>
+			`;
+		}, 5000);
+	</script>
 </body>
 </html>

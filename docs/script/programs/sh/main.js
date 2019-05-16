@@ -17,11 +17,20 @@ export default async function(kernel, settings) {
 	let parse = async function(line) {
 		if(line === undefined) return;
 		line = splitLine(line);
-		if(line.length == 0) return;
+		if(line.length === 0) return;
 		
 		switch(line[0].toLowerCase()) {
 			case "exit":
 				exit = true;
+				break;
+				
+			case "cd":
+				let check = kernel.get_pathnode(line[1], settings.path);
+				if(check && check instanceof Object) {
+					settings.path = kernel.realpath(line[1], settings.path);
+				} else {
+					kernel.printf(`No folder named "${line[1]}"\n`);
+				}
 				break;
 				
 			default:
@@ -47,7 +56,7 @@ export default async function(kernel, settings) {
 	//init
 	kernel.puts("5hell started");
 	while(!exit) {
-		kernel.printf("$> ");
+		kernel.printf(`$ ${settings.path}> `);
 		await parse(await kernel.getline());
 	}
 }
