@@ -1,37 +1,15 @@
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<script type="module" src="script/init.js"></script>
-</head>
+	<link rel="stylesheet" type="text/css" href="/kernel/default_style.css">
+	<script type="module">
+		import Kernel from "./kernel/main.js";
 
-<body>
-	<div class="contain">
-		<div id="main" contenteditable="true" spellcheck="false">
-			<div>Loading Kernel...</div>
-			<div>&nbsp;</div>
-			
-			<!-- Detect if Javascript is disabled by removing the warning with JS -->
-			<div id="nojs">Javascript is disabled(?)</div>
-			<script style="display: none">
-				document.getElementById("nojs").outerHTML = "";
-			</script>
-			
-			<div id="troubleshooting"></div>
-		</div>
-		<div id="overlay"></div>
-	</div>
-	
-	<script style="display: none">
-		setTimeout(function() {
-			let elem = document.getElementById("troubleshooting");
-			if(elem === null) return;
-			elem.outerHTML = `
-				<div>Troubleshooting:</div>
-				<div>Firefox</div>
-				<div>  Check console, if the error involves a "dynamic import":</div>
-				<div>    Enable "javascript.options.dynamicImport" in about:config</div>
-			`;
-		}, 5000);
+		window.onload = async () => {
+			window.global_kernel = new Kernel(document.getElementById("container"));
+		}
 	</script>
+</head>
+<body>
+	<div id="container">Loading...</div>
 </body>
 </html>

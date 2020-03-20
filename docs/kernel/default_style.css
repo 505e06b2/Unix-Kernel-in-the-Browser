@@ -1,0 +1,14 @@
+.terminal-container {
+	height: 480px;
+	width: 640px;
+	color: #eee;
+	background: #333;
+	overflow-y: auto;
+	padding: 5px;
+}
+
+.terminal-interface {
+	padding: 0px;
+	margin: 0px;
+	outline: none;
+}
