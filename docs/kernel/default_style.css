@@ -11,4 +11,8 @@
 	padding: 0px;
 	margin: 0px;
 	outline: none;
+	width: 100%;
+	max-width: 100%;
+	white-space: break-spaces;
+	word-break: break-all;
 }
