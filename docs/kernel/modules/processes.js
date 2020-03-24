@@ -45,6 +45,7 @@ export default function(_kernel) {
 	};
 
 	this.init = async () => {
+		await _kernel.fs.init();
 		await this.execute(null, "/init");
 		await _kernel.output.printString("!KERNEL PANIC! PID0 HAS EXITED");
 	};

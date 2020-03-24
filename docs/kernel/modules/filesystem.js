@@ -1,44 +1,3 @@
-const default_bin = {
-
-"bash":
-`
-	await kernel.output.printString("== 5shell ==\\n");
-	while(true) {
-		await kernel.output.printString(process.cwd + "# ");
-		let argv = (await kernel.input.getLine()).slice(0,-1).split(" "); //remove newline
-
-		switch(argv[0]) {
-			case "":
-				continue;
-
-			case "cd":
-				if(argv[1]) await process.chdir(await kernel.fs.resolve(process, argv[1]));
-				continue;
-
-			case "exit":
-				if(argv[1] && parseInt(argv[1])) return parseInt(argv[1]);
-				return 0;
-		}
-
-		await kernel.proc.execute(process, argv);
-	}
-`,
-
-"ls":
-`
-	const list = await kernel.fs.listdir(await kernel.fs.resolve(process, (argv[1]) ? argv[1] : "."));
-	if(!list) return;
-	for(let i = 0; i < list.length; i++) {
-		await kernel.output.printString(list[i] + "\\n");
-	}
-`
-};
-
-const default_files = {
-	"bin": default_bin,
-	"init": `await kernel.output.printString("Init Loaded...\\n"); await kernel.proc.execute(process, "/bin/bash")`
-};
-
 export default function(_kernel) {
 	this.resolve = async (process, path) => {
 		let split_path = path.split("/");
@@ -58,37 +17,38 @@ export default function(_kernel) {
 	}
 
 	this.read = async (path) => { //must be absolute
-		if(path[0] !== "/") {
-			throw "Paths must be absolute";
-		}
+		if(path[0] !== "/") throw "Paths must be absolute";
 
 		const resolved = path.slice(1).split("/"); //remove the first "/"
 		let current_node = this.files;
 		for(let i = 0; i < resolved.length; i++) {
 			current_node = current_node[resolved[i]];
 		}
+		if(typeof current_node !== "string") return undefined;
 		return current_node;
 	}
 
 	this.listdir = async (path) => { //must be absolute
-		if(path[0] !== "/") {
-			throw "Paths must be absolute";
-		}
+		if(path[0] !== "/") throw "Paths must be absolute";
 
 		const resolved = path.split("/"); //remove the first "/"
 		let current_node = this.files;
 		for(let i = 0; i < resolved.length; i++) {
 			if(resolved[i]) current_node = current_node[resolved[i]];
 		}
-
-		if(typeof current_node === "object") {
-			return Object.keys(current_node);
-		} else {
-			await _kernel.output.printString(`${path} is not a directory\n`);
-			return undefined;
-		}
-
+		if(typeof current_node !== "object") return undefined;
+		return Object.keys(current_node);
 	}
 
-	this.files = default_files; //doesn't matter if shallow merge, as nothing to replace
+	this.init = async () => {
+		this.files = {
+			"bin": {
+				"sh": await (await fetch("./kernel/bin/sh.js")).text(),
+				"ls": await (await fetch("./kernel/bin/ls.js")).text(),
+				"pwd": await (await fetch("./kernel/bin/pwd.js")).text(),
+				"cat": await (await fetch("./kernel/bin/cat.js")).text()
+			},
+			"init": `await kernel.output.printString("Init Loaded...\\n"); await kernel.proc.execute(process, "/bin/sh")`
+		};
+	}
 }
